@@ -13,18 +13,47 @@ The model in this repository is a reference implementation, which has been re-tr
 
 ## Getting Started
 
-We recommend setting up a virtual environment. Using e.g. miniconda, the `depth_pro` package can be installed via:
+We recommend setting up a Python 3.9 virtual environment (`venv`).
 
 ```bash
-conda create -n depth-pro -y python=3.9
-conda activate depth-pro
+# 1. Create a Python 3.9 virtual environment
+py -3.9 -m venv .venv
 
-pip install -e .
+# 2. Activate the virtual environment
+.venv\Scripts\activate
+
+# 3. Upgrade pip
+python -m pip install --upgrade pip
+
+# 4. Install dependencies (including CUDA PyTorch) and Depth Pro
+pip install -r requirements.txt
 ```
 
-To download pretrained checkpoints follow the code snippet below:
+To download the pretrained checkpoint:
 ```bash
-source get_pretrained_models.sh   # Files will be downloaded to `checkpoints` directory.
+# Using the provided shell script (if you have bash/Git Bash)
+source get_pretrained_models.sh
+
+# Or download directly from URL into the checkpoints/ directory:
+# https://ml-site.cdn-apple.com/models/depth-pro/depth_pro.pt
+```
+
+### Basic Library Usage
+
+We provide a clean library wrapper (`depthpro_engine.py`) to run inference seamlessly:
+
+```python
+import cv2
+from depthpro_engine import DepthPro
+
+# The model is loaded onto CUDA and warmed up automatically on instantiation.
+model = DepthPro()
+
+image = cv2.imread("example.jpg")
+image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+# Predict returns a [0, 1] normalized heatmap (float32 numpy array)
+heatmap = model.predict(image)
 ```
 
 ### Running from commandline

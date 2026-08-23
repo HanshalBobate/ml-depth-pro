@@ -4,12 +4,13 @@ version = "0.1"
 description = "Inference/Network/Model code for Apple Depth Pro monocular depth estimation."
 readme = "README.md"
 dependencies = [
-    "torch",
-    "torchvision",
+    "torch==2.8.0+cu128",
+    "torchvision==0.23.0",
     "timm",
-    "numpy<2",
+    "numpy==1.26.4",
     "pillow_heif",
     "matplotlib",
+    "opencv-python",
 ]
 
 [project.scripts]
