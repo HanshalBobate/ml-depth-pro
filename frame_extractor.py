@@ -24,11 +24,12 @@ duration = total_frames / video_fps
 
 print(f"Video FPS: {video_fps}")
 print(f"Video duration: {duration:.2f} seconds")
-print(f"Extracting: {START_TIME}s → {END_TIME}s")
+print(f"Extracting: {START_TIME}s -> {END_TIME}s")
 print(f"Output: {WIDTH}x{HEIGHT} @ {FPS} FPS")
 
-# Start at requested timestamp
-cap.set(cv2.CAP_PROP_POS_MSEC, START_TIME * 1000)
+# Start at requested timestamp using frame indices
+start_frame = int(START_TIME * video_fps)
+cap.set(cv2.CAP_PROP_POS_FRAMES, start_frame)
 
 frame_interval = 1.0 / FPS
 next_frame_time = START_TIME
@@ -36,7 +37,8 @@ next_frame_time = START_TIME
 frame_number = 0
 
 while True:
-    current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+    current_frame = cap.get(cv2.CAP_PROP_POS_FRAMES)
+    current_time = current_frame / video_fps
 
     if current_time >= END_TIME:
         break
@@ -46,7 +48,8 @@ while True:
     if not ret:
         break
 
-    current_time = cap.get(cv2.CAP_PROP_POS_MSEC) / 1000.0
+    current_frame = cap.get(cv2.CAP_PROP_POS_FRAMES)
+    current_time = current_frame / video_fps
 
     # Only save frames at 5 FPS
     if current_time >= next_frame_time:
